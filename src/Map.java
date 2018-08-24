@@ -20,7 +20,7 @@ public class Map {
 	private Space[][] map2 = new Space[101][101];
 
 	// keep track of player
-	private int[] playerPos = { 0, 0 };
+	private int[] playerPos = { 50, 50 };
 	private Player player = new Player();
 	
 	public Map() {

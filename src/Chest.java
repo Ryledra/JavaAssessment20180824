@@ -30,7 +30,15 @@ public class Chest {
 	}
 	
 	public String toString()	{
-		return "In the chest you find " + this.gold + " gold.";
+		String out = "In the chest you find ";
+		
+		for (Items.items i : items)	{
+			out += "a " + i + " and ";
+		}
+		
+		out += this.gold + " gold.";
+		
+		return out;
 	}
 	
 }
