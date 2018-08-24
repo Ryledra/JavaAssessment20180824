@@ -44,4 +44,20 @@ public class Space {
 	public AreaType.areaType getTerrain()	{
 		return terrain;
 	}
+	
+	public String toString()	{
+		String out = "You find yourself ";
+		switch (terrain)	{
+		case wood:
+			out += "surrounded by lots of trees, you are in a wood.";
+			break;
+		case lake:
+			out += "beside a lake, off to your left you can see a small boat.";
+			break;
+		case field:
+			out += "in a field, it seems the farmer is growing wheat.";
+			break;
+		}
+		return out;
+	}
 }

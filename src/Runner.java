@@ -5,7 +5,7 @@ public class Runner {
 
 		Map map = new Map();
 		
-		System.out.println(map.look(Map.directions.north));
+		while (map.playerInput());
 		
 	}
 
