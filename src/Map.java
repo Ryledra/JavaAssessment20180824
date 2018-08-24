@@ -3,21 +3,29 @@ import java.util.Scanner;
 public class Map {
 
 	public enum commands {
-		go, look, check, exit, help, watch, gold, open
+		// commands for input
+		// {go, look, check, exit, help, open} primary commands
+		// {watch, gold} secondary commands
+		go, look, check, exit, help, open, watch, gold
 	};
 
 	public enum directions {
+		// cardinal directions to follow the commands <look / go>
 		north, east, south, west
 	};
 
+	// main player map
 	private Space[][] map = new Space[101][101];
+	//secondary map for psudo-infinite map space
 	private Space[][] map2 = new Space[101][101];
 
+	// keep track of player
 	private int[] playerPos = { 0, 0 };
 	private Player player = new Player();
 	
 	public Map() {
 
+		// initialise the maps
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[0].length; j++) {
 				map[i][j] = new Space();
@@ -25,8 +33,11 @@ public class Map {
 			}
 		}
 		
+		// print to console help function
 		System.out.println(this);
 		
+		// print to console description of player's current
+		// location and the areas around them
 		System.out.println(playerUpdate());
 		
 		System.out.println("\nOn your wrist you find a strange contraption that seems to glow faintly.\n" +
@@ -35,7 +46,7 @@ public class Map {
 	}
 
 	public String look(directions direction) {
-
+		// function returns a string describing the terrain of the next space in direction requested
 		String response = "To your " + direction + " you can see a ";
 		Boolean container;
 		AreaType.areaType terrain;
@@ -96,7 +107,8 @@ public class Map {
 	}
 
 	public Boolean playerInput() {
-
+		// method to take player input and call selected commands
+		// returns true unless player enters "exit"
 		@SuppressWarnings("resource")
 		Scanner scan = new Scanner(System.in);
 
@@ -105,7 +117,6 @@ public class Map {
 		String input = "";
 
 		do {
-
 			System.out.print("\nWhat would you like to do? ");
 
 			input = scan.nextLine();
@@ -158,6 +169,7 @@ public class Map {
 	}
 	
 	public String toString()	{
+		// prints the valid commands as a help function
 		return "\n***---*****************---***"
 		         + "\nCommands that can be entered:"
 		         + "\nlook <direction>"
@@ -169,7 +181,8 @@ public class Map {
 	}
 	
 	public String checkWatch()	{
-
+		// returns a string stating where the nearest chest is
+		// currently only checks cardinal directions
 		String out = "Looking closely at your watch it looks like there might be";
 		for (int i = 1; i <= 20 ; i++)	{
 			//north
@@ -213,6 +226,8 @@ public class Map {
 	}
 	
 	public String go(directions direc)	{
+		// moves the player in the desired direction
+		// returns a string from playerUpdate()
 		switch (direc)	{
 		case north:
 			if (this.playerPos[0] + 1 > 100)	{
@@ -244,7 +259,7 @@ public class Map {
 	}
 	
 	public String playerUpdate()	{
-		
+		// returns string of player surroundings
 		return map[playerPos[0]][playerPos[1]] + "\n\n" 
 				+ this.look(directions.north) + "\n" 
 				+ this.look(directions.east) + "\n" 
@@ -253,6 +268,8 @@ public class Map {
 	}
 	
 	public void updateMaps(directions direc)	{
+		// when player reaches edge of map replaces with 
+		// map2, reinitialises map2 for psudo-infinite play
 		this.map = this.map2;
 		this.map2 = new Space[101][101];
 		
@@ -264,6 +281,11 @@ public class Map {
 	}
 	
 	public String openChest()	{
+		// allows player to open chest returns string with details
+		// adds gold found to player's inventory 
+		if (map[playerPos[0]][playerPos[1]].getChest() == null)	{
+			return "There is no chest here";
+		}
 		int gold = map[playerPos[0]][playerPos[1]].getChest().getGold();
 		player.updateGold(gold);
 		map[playerPos[0]][playerPos[1]].removeChest();

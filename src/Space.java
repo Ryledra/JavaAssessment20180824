@@ -1,8 +1,8 @@
 import java.util.Random;
 
 public class Space {
-	private Boolean container;
-	private Chest chest;
+	private Boolean container; // does the space contain an event (currently includes {chest})
+	private Chest chest; 
 	private AreaType.areaType terrain;
 	
 	public Space()	{
