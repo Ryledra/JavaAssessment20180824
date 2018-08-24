@@ -58,6 +58,11 @@ public class Space {
 			out += "in a field, it seems the farmer is growing wheat.";
 			break;
 		}
+		if (container)	out += "\n In front of you you can see a chest.\n";
 		return out;
+	}
+	
+	public void removeChest()	{
+		this.chest = null;
 	}
 }

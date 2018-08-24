@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Map {
 
 	public enum commands {
-		go, look, check, exit, help, watch, gold
+		go, look, check, exit, help, watch, gold, open
 	};
 
 	public enum directions {
@@ -14,7 +14,8 @@ public class Map {
 	private Space[][] map2 = new Space[101][101];
 
 	private int[] playerPos = { 50, 50 };
-
+	private Player player = new Player();
+	
 	public Map() {
 
 		for (int i = 0; i < map.length; i++) {
@@ -26,15 +27,10 @@ public class Map {
 		
 		System.out.println(this);
 		
-		System.out.println(map[playerPos[0]][playerPos[1]]);
-		
-		System.out.println(this.look(directions.north));
-		System.out.println(this.look(directions.east));
-		System.out.println(this.look(directions.south));
-		System.out.println(this.look(directions.west));
+		System.out.println(playerUpdate());
 		
 		System.out.println("\nOn your wrist you find a strange contraption that seems to glow faintly.\n" +
-							"Taking a closer look you decide that the glow indicates a chest hidden nearby.");
+							"Taking a closer look you decide that the glow must indicate a chest hidden nearby.");
 		
 	}
 
@@ -123,9 +119,15 @@ public class Map {
 				validInput = true;
 			} else if (command[0].equals(String.valueOf(commands.help)))	{
 				System.out.println(this);
-			} else if (command[0].equals(String.valueOf(commands.check)))	{
+			} else if (command[0].equals(String.valueOf(commands.check)) 
+					&& command[1].equals(String.valueOf(commands.watch)))	{
 				System.out.println(checkWatch());
-			} 
+			} else if (command[0].equals(String.valueOf(commands.check)) 
+					&& command[1].equals(String.valueOf(commands.gold)))	{
+				System.out.println(player);
+			} else if (command[0].equals(String.valueOf(commands.open)))	{
+				System.out.println(openChest());
+			}
 
 		} while (!validInput);
 		return true;
@@ -143,6 +145,7 @@ public class Map {
 	}
 	
 	public String checkWatch()	{
+		// needs to check on secondary map when nearing an edge
 		String out = "Looking closely at your watch you can see";
 		for (int i = 1; i <= 20 ; i++)	{
 			if (map[this.playerPos[0]+i][this.playerPos[1]].getContainer())	{
@@ -164,7 +167,61 @@ public class Map {
 	}
 	
 	public String go(directions direc)	{
+		switch (direc)	{
+		case north:
+			if (this.playerPos[0] + 1 > 100)	{
+				updateMaps(direc);
+				this.playerPos[0] = 0;
+			} else this.playerPos[0] += 1;
+			return playerUpdate();
+		case east:
+			if (this.playerPos[1] + 1 > 100)	{
+				updateMaps(direc);
+				this.playerPos[1] = 0;
+			} else this.playerPos[1] += 1;
+			return playerUpdate();
+		case south:
+			if (this.playerPos[0] - 1 > 100)	{
+			updateMaps(direc);
+			this.playerPos[0] = 100;
+			} else this.playerPos[0] -= 1;
+			return playerUpdate();
+		case west:
+			if (this.playerPos[1] - 1 > 100)	{
+			updateMaps(direc);
+			this.playerPos[1] = 100;
+			} else this.playerPos[1] -= 1;
+			return playerUpdate();
+		default:
+			return "not a valid direction";
+		}
+	}
+	
+	public String playerUpdate()	{
 		
-		return "not yet implimented";
+		return map[playerPos[0]][playerPos[1]] + "\n\n" 
+				+ this.look(directions.north) + "\n" 
+				+ this.look(directions.east) + "\n" 
+				+ this.look(directions.south) + "\n" 
+				+ this.look(directions.west);
+	}
+	
+	public void updateMaps(directions direc)	{
+		this.map = this.map2;
+		this.map2 = new Space[101][101];
+		
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[0].length; j++) {
+				map2[i][j] = new Space();
+			}
+		}
+	}
+	
+	public String openChest()	{
+		int gold = map[playerPos[0]][playerPos[1]].getChest().getGold();
+		player.updateGold(gold);
+		map[playerPos[0]][playerPos[1]].removeChest();
+		return "You open the chest to find " + gold + " gold.\n" +
+				"You put your new gold into your pockets.\n" + this.player;
 	}
 }
