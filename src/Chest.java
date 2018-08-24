@@ -19,4 +19,8 @@ public class Chest {
 		return gold;
 	}
 	
+	public String toString()	{
+		return "In the chest you find " + this.gold + " gold.";
+	}
+	
 }

@@ -3,14 +3,15 @@ import java.util.Scanner;
 public class Map {
 
 	public enum commands {
-		go, look, checkWatch, exit
+		go, look, check, exit, help, watch, gold
 	};
 
 	public enum directions {
-		north, east, south, west, blank
+		north, east, south, west
 	};
 
 	private Space[][] map = new Space[101][101];
+	private Space[][] map2 = new Space[101][101];
 
 	private int[] playerPos = { 50, 50 };
 
@@ -19,15 +20,21 @@ public class Map {
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[0].length; j++) {
 				map[i][j] = new Space();
+				map2[i][j] = new Space();
 			}
 		}
+		
+		System.out.println(this);
 		
 		System.out.println(map[playerPos[0]][playerPos[1]]);
 		
 		System.out.println(this.look(directions.north));
 		System.out.println(this.look(directions.east));
 		System.out.println(this.look(directions.south));
-		System.out.println(this.look(directions.west) + "\n");
+		System.out.println(this.look(directions.west));
+		
+		System.out.println("\nOn your wrist you find a strange contraption that seems to glow faintly.\n" +
+							"Taking a closer look you decide that the glow indicates a chest hidden nearby.");
 		
 	}
 
@@ -79,7 +86,7 @@ public class Map {
 
 		do {
 
-			System.out.print("What would you like to do? ");
+			System.out.print("\nWhat would you like to do? ");
 
 			input = scan.nextLine();
 
@@ -89,7 +96,17 @@ public class Map {
 				System.out.println("Game ends.");
 				return false;
 			} else if (command[0].equals(String.valueOf(commands.go))) {
-				System.out.println("command not yet implimented");
+				if (command[1].equals("")) {
+					continue;
+				} else if (command[1].equals(String.valueOf(directions.north))) {
+					System.out.println(this.go(directions.north));
+				} else if (command[1].equals(String.valueOf(directions.east))) {
+					System.out.println(this.go(directions.east));
+				} else if (command[1].equals(String.valueOf(directions.south))) {
+					System.out.println(this.go(directions.south));
+				} else if (command[1].equals(String.valueOf(directions.west))) {
+					System.out.println(this.go(directions.west));
+				}
 				validInput = true;
 			} else if (command[0].equals(String.valueOf(commands.look))) {
 				if (command[1].equals("")) {
@@ -104,9 +121,50 @@ public class Map {
 					System.out.println(this.look(directions.west));
 				}
 				validInput = true;
-			}
+			} else if (command[0].equals(String.valueOf(commands.help)))	{
+				System.out.println(this);
+			} else if (command[0].equals(String.valueOf(commands.check)))	{
+				System.out.println(checkWatch());
+			} 
 
 		} while (!validInput);
 		return true;
+	}
+	
+	public String toString()	{
+		return "\n***---*****************---***"
+		         + "\nCommands that can be entered:"
+		         + "\nlook <direction>"
+		         + "\ngo <direction>"
+		         + "\ncheck <watch / gold>"
+		         + "\nhelp"
+		         + "\nexit"
+			     + "\n***---*****************---***\n";
+	}
+	
+	public String checkWatch()	{
+		String out = "Looking closely at your watch you can see";
+		for (int i = 1; i <= 20 ; i++)	{
+			if (map[this.playerPos[0]+i][this.playerPos[1]].getContainer())	{
+				out += " a chest " + i + "00 yards to the north";
+				break;
+			} else if (map[this.playerPos[0]-i][this.playerPos[1]].getContainer())	{
+				out += " a chest " + i + "00 yards to the south";
+				break;
+			} else if (map[this.playerPos[0]][this.playerPos[1]+i].getContainer())	{
+				out += " a chest " + i + "00 yards to the east";
+				break;
+			} else if (map[this.playerPos[0]][this.playerPos[1]-i].getContainer())	{
+				out += " a chest " + i + "00 yards to the west";
+				break;
+			}
+		}
+		if (out.equals("")) out += " no chests nearby";
+		return out;
+	}
+	
+	public String go(directions direc)	{
+		
+		return "not yet implimented";
 	}
 }

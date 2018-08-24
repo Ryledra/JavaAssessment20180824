@@ -9,4 +9,8 @@ public class Player {
 	public void updateGold(int moreGold)	{
 		this.gold += moreGold;
 	}
+	
+	public String toString()	{
+		return "You have " + this.gold + " gold.";
+	}
 }
