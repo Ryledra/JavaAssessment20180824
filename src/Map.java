@@ -175,6 +175,7 @@ public class Map {
 		         + "\nlook <direction>"
 		         + "\ngo <direction>"
 		         + "\ncheck <watch / gold>"
+		         + "\nopen chest"
 		         + "\nhelp"
 		         + "\nexit"
 			     + "\n***---*****************---***\n";
