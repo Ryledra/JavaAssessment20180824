@@ -13,7 +13,7 @@ public class Map {
 	private Space[][] map = new Space[101][101];
 	private Space[][] map2 = new Space[101][101];
 
-	private int[] playerPos = { 50, 50 };
+	private int[] playerPos = { 0, 0 };
 	private Player player = new Player();
 	
 	public Map() {
@@ -41,23 +41,47 @@ public class Map {
 		AreaType.areaType terrain;
 		switch (direction) {
 		case north:
-			terrain = map[this.playerPos[0] + 1][this.playerPos[1]].getTerrain();
-			container = map[this.playerPos[0] + 1][this.playerPos[1]].getContainer();
+			if (playerPos[0] == 100)	{
+				terrain = map2[0][this.playerPos[1]].getTerrain();
+				container = map2[0][this.playerPos[1]].getContainer();
+			}
+			else {
+				terrain = map[this.playerPos[0] + 1][this.playerPos[1]].getTerrain();
+				container = map[this.playerPos[0] + 1][this.playerPos[1]].getContainer();
+			}
 			response += terrain;
 			break;
 		case east:
-			terrain = map[this.playerPos[0]][this.playerPos[1] + 1].getTerrain();
-			container = map[this.playerPos[0]][this.playerPos[1] + 1].getContainer();
+			if (playerPos[1] == 100)	{
+				terrain = map2[this.playerPos[0]][0].getTerrain();
+				container = map2[this.playerPos[0]][0].getContainer();
+			}
+			else {
+				terrain = map[this.playerPos[0]][this.playerPos[1] + 1].getTerrain();
+				container = map[this.playerPos[0]][this.playerPos[1] + 1].getContainer();
+			}
 			response += terrain;
 			break;
 		case south:
-			terrain = map[this.playerPos[0] - 1][this.playerPos[1]].getTerrain();
-			container = map[this.playerPos[0] - 1][this.playerPos[1]].getContainer();
+			if (playerPos[0] == 0)	{
+				terrain = map2[100][this.playerPos[1]].getTerrain();
+				container = map2[100][this.playerPos[1]].getContainer();
+			}
+			else {
+				terrain = map[this.playerPos[0] - 1][this.playerPos[1]].getTerrain();
+				container = map[this.playerPos[0] - 1][this.playerPos[1]].getContainer();
+			}
 			response += terrain;
 			break;
 		case west:
-			terrain = map[this.playerPos[0]][this.playerPos[1] - 1].getTerrain();
-			container = map[this.playerPos[0]][this.playerPos[1] - 1].getContainer();
+			if (playerPos[1] == 100)	{
+				terrain = map2[this.playerPos[0]][0].getTerrain();
+				container = map2[this.playerPos[0]][0].getContainer();
+			}
+			else {
+				terrain = map[this.playerPos[0]][100].getTerrain();
+				container = map[this.playerPos[0]][100].getContainer();
+			}
 			response += terrain;
 			break;
 		default:
@@ -145,16 +169,38 @@ public class Map {
 	}
 	
 	public String checkWatch()	{
-		// needs to check on secondary map when nearing an edge
-		String out = "Looking closely at your watch you can see";
+
+		String out = "Looking closely at your watch it looks like there might be";
 		for (int i = 1; i <= 20 ; i++)	{
-			if (map[this.playerPos[0]+i][this.playerPos[1]].getContainer())	{
+			//north
+			if (this.playerPos[0] + i > 100 && map2[i - (100 - this.playerPos[0])][this.playerPos[1]].getContainer())	{
 				out += " a chest " + i + "00 yards to the north";
+				break;
+			} else if (map[this.playerPos[0]+i][this.playerPos[1]].getContainer())	{
+				out += " a chest " + i + "00 yards to the north";
+				break;
+			}
+			
+			// south
+			else if (this.playerPos[0] - i < 0 && map2[(100 - this.playerPos[0])][this.playerPos[1]].getContainer())	{
+				out += " a chest " + i + "00 yards to the south";
 				break;
 			} else if (map[this.playerPos[0]-i][this.playerPos[1]].getContainer())	{
 				out += " a chest " + i + "00 yards to the south";
 				break;
+			} 
+			
+			// east
+			else if (this.playerPos[1] + i > 100 && map2[this.playerPos[0]][i - (100 - this.playerPos[1])].getContainer())	{
+				out += " a chest " + i + "00 yards to the east";
+				break;
 			} else if (map[this.playerPos[0]][this.playerPos[1]+i].getContainer())	{
+				out += " a chest " + i + "00 yards to the east";
+				break;
+			} 
+			
+			// west
+			else if (this.playerPos[1] - i < 0 && map2[this.playerPos[0]][(100 - this.playerPos[1])].getContainer())	{
 				out += " a chest " + i + "00 yards to the east";
 				break;
 			} else if (map[this.playerPos[0]][this.playerPos[1]-i].getContainer())	{
@@ -162,7 +208,7 @@ public class Map {
 				break;
 			}
 		}
-		if (out.equals("")) out += " no chests nearby";
+		if (out.equals("")) out = "Looking closely at your watch you see no chests nearby";
 		return out;
 	}
 	
@@ -181,13 +227,13 @@ public class Map {
 			} else this.playerPos[1] += 1;
 			return playerUpdate();
 		case south:
-			if (this.playerPos[0] - 1 > 100)	{
+			if (this.playerPos[0] - 1 < 0)	{
 			updateMaps(direc);
 			this.playerPos[0] = 100;
 			} else this.playerPos[0] -= 1;
 			return playerUpdate();
 		case west:
-			if (this.playerPos[1] - 1 > 100)	{
+			if (this.playerPos[1] - 1 < 0)	{
 			updateMaps(direc);
 			this.playerPos[1] = 100;
 			} else this.playerPos[1] -= 1;
